@@ -1,13 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import  React , {useState} from 'react';
+import { StyleSheet, Text, View , TextInput } from 'react-native';
+import AppInput from './component/form/AppInput';
+import Screen from './component/screens/Screen';
 
 export default function App() {
+  const [input, setInput] = useState('')
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Screen  style={styles.container} >
+      <Text>test</Text>
+        <AppInput onChangeText={setInput} name="idk ma dude" iconColor='white' iconName='email' 
+         />
+    </Screen>
   );
 }
 
@@ -17,5 +20,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  }
 });
