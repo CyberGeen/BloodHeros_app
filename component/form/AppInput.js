@@ -3,7 +3,7 @@ import { View, TextInput } from 'react-native'
 import { StyleSheet } from 'react-native'
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 
-const AppInput = ({ onChangeText , name , iconName , iconColor , containerStyle , iconStyle , ...otherProps}) => {
+const AppInput = ({ onChangeText , placeholder , iconName , iconColor , containerStyle , iconStyle , ...otherProps}) => {
     return (
         <View style={[styles.container , containerStyle]} >
             {   
@@ -19,7 +19,7 @@ const AppInput = ({ onChangeText , name , iconName , iconColor , containerStyle 
             <TextInput 
                 style={[styles.input , iconStyle]} 
                 onChangeText={onChangeText} 
-                placeholder={name} 
+                placeholder={placeholder} 
                 //put other props dynamicly
                 {...otherProps}
              />            
