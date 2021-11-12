@@ -7,19 +7,29 @@ import jsonBlood from './component/json/bloodType.json'
 import AppTimePicker from './component/form/AppTimePicker';
 import AppButton from './component/form/AppButton';
 import { Formik } from 'formik';
-import * as yup from 'yup'
+import * as Yup from 'yup'
 import AppForm from './component/form/AppForm';
 import AppFormField from './component/form/AppFormField';
 import AppSubmitButton from './component/form/AppSubmitButton';
+import moment from 'moment';
 
+
+currentDate = moment().format('YYYY-MM-DD')
 export default function App() {
   const [input, setInput] = useState('')
+  const schema = Yup.object().shape({
+   email :  Yup.string().email('Must be a valid email').required('Email is required'),
+   email2 :  Yup.string().email('Must be a valid email').required('Email is required'),
+   blood : Yup.string().required('reeeq') , 
+   date : Yup.string().required('qsdqsd')
+  })
   return (
     <Screen  style={styles.container} >
       <Text>test</Text>
       <AppForm
-        initialValues={{email:''}}
+        initialValues={{email:'' , blood:''}}
         handleSubmit={(val)=>{console.log(val)}}
+        schema={schema}
       >
         <AppFormField 
           type='text'
@@ -29,13 +39,22 @@ export default function App() {
           placeholder='enter ur email'
         />
         <AppFormField 
+          type='text'
+          name='email2'
+          iconName='email'
+          label='email here'
+          placeholder='enter ur email'
+        />
+        <AppFormField 
           type='dropDown'
           object={jsonBlood}
           name='blood'
+          placeholder="idk ma dude"
         />
         <AppFormField 
           type='date'
           name='date'
+          maxDate={currentDate}
         />
         
         <AppSubmitButton label='Do IT' />

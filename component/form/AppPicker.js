@@ -2,9 +2,16 @@ import React from 'react'
 import { View,Text , StyleSheet} from 'react-native'
 import { Picker } from '@react-native-picker/picker'
 
-const AppPicker = ({value , handleChange , object  }) => {
+const AppPicker = ({value , handleChange , object , placeholder  }) => {
     object = Object.entries(object)
+     object.unshift([placeholder,"ligma"])
+    if(value !== 'ligma' && value !== ''){
+        object = object.filter((obj)=>obj[1]!=='ligma')
+    }
     object = object.map( (obj) => {
+        if(obj[1] == 'ligma'){
+            return <Picker.Item label={obj[0]} value={obj[1]} key={obj[0]} color='black' />
+        }
         return (
             <Picker.Item label={obj[0]} value={obj[1]} key={obj[0]} color='red' />
         )
@@ -13,7 +20,7 @@ const AppPicker = ({value , handleChange , object  }) => {
         <View style = {styles.container}>
             <Picker 
                 style = {styles.picker} 
-                selectedValue = {value}
+                selectedValue = { value }
                 onValueChange = {(val) => handleChange(val)}
                 mode = 'dropdown'
                 dropdownIconColor= 'red' 
