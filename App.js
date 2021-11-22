@@ -1,4 +1,4 @@
-import  React , {useState} from 'react';
+import  React , {useState , useEffect} from 'react';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import AppInput from './component/form/AppInput';
 import AppPicker from './component/form/AppPicker';
@@ -12,9 +12,28 @@ import AppForm from './component/form/AppForm';
 import AppFormField from './component/form/AppFormField';
 import AppSubmitButton from './component/form/AppSubmitButton';
 import moment from 'moment';
-
+import LoginScreen from './component/screens/LoginScreen';
+import SignUpScreen from './component/screens/SignUpScreen';
+import CreatePostScreen from './component/screens/CreatePostScreen'
+import AuthNav from './component/navigations/AuthNav';
+import { NavigationContainer } from '@react-navigation/native';
+import {getUser} from './services/httpService'
 
 currentDate = moment().format('YYYY-MM-DD')
+
+
+const gettingUser = async () => {
+  try {
+    const idk = await getUser()
+    if (idk === null){
+      console.log('no tokken')
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
 export default function App() {
   const [input, setInput] = useState('')
   const schema = Yup.object().shape({
@@ -23,10 +42,21 @@ export default function App() {
    blood : Yup.string().required('reeeq') , 
    date : Yup.string().required('qsdqsd')
   })
+
+  
+
+  useEffect(() => {
+    gettingUser() 
+  }, [])
+  return(
+    <AuthNav />
+  )
   return (
-    <Screen  style={styles.container} >
-      <Text>test</Text>
-      <AppForm
+    <Screen   >
+      
+      
+
+      {/* <AppForm
         initialValues={{email:'' , blood:''}}
         handleSubmit={(val)=>{console.log(val)}}
         schema={schema}
@@ -58,11 +88,11 @@ export default function App() {
         />
         
         <AppSubmitButton label='Do IT' />
-      </AppForm>
+      </AppForm> */}
     </Screen>
   );
 }
-
+//style={styles.container}
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
