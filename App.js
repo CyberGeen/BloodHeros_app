@@ -1,61 +1,70 @@
-import  React , {useState , useEffect} from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
-import AppInput from './component/form/AppInput';
-import AppPicker from './component/form/AppPicker';
-import Screen from './component/screens/Screen';
-import jsonBlood from './component/json/bloodType.json'
-import AppTimePicker from './component/form/AppTimePicker';
-import AppButton from './component/form/AppButton';
-import { Formik } from 'formik';
-import * as Yup from 'yup'
-import AppForm from './component/form/AppForm';
-import AppFormField from './component/form/AppFormField';
-import AppSubmitButton from './component/form/AppSubmitButton';
-import moment from 'moment';
-import LoginScreen from './component/screens/LoginScreen';
-import SignUpScreen from './component/screens/SignUpScreen';
-import CreatePostScreen from './component/screens/CreatePostScreen'
-import AuthNav from './component/navigations/AuthNav';
-import { NavigationContainer } from '@react-navigation/native';
-import {getUser} from './services/httpService'
-
-currentDate = moment().format('YYYY-MM-DD')
-
-
-const gettingUser = async () => {
-  try {
-    const idk = await getUser()
-    if (idk === null){
-      console.log('no tokken')
-    }
-  } catch (error) {
-    console.log(error)
-  }
-}
-
+import React, { useState, useEffect, useContext } from "react";
+import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import AppInput from "./component/form/AppInput";
+import AppPicker from "./component/form/AppPicker";
+import Screen from "./component/screens/Screen";
+import jsonBlood from "./component/json/bloodType.json";
+import AppTimePicker from "./component/form/AppTimePicker";
+import AppButton from "./component/form/AppButton";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import AppForm from "./component/form/AppForm";
+import AppFormField from "./component/form/AppFormField";
+import AppSubmitButton from "./component/form/AppSubmitButton";
+import moment from "moment";
+import LoginScreen from "./component/screens/LoginScreen";
+import SignUpScreen from "./component/screens/SignUpScreen";
+import CreatePostScreen from "./component/screens/CreatePostScreen";
+import AuthNav from "./component/navigations/AuthNav";
+import { NavigationContainer } from "@react-navigation/native";
+import { getUser } from "./services/httpService";
+import MainNav from "./component/navigations/MainNav";
+import UserContext from "./component/context/UserContext";
+import userHook from "./component/hooks/userHook";
+currentDate = moment().format("YYYY-MM-DD");
 
 export default function App() {
-  const [input, setInput] = useState('')
+  const [input, setInput] = useState("");
   const schema = Yup.object().shape({
-   email :  Yup.string().email('Must be a valid email').required('Email is required'),
-   email2 :  Yup.string().email('Must be a valid email').required('Email is required'),
-   blood : Yup.string().required('reeeq') , 
-   date : Yup.string().required('qsdqsd')
-  })
+    email: Yup.string()
+      .email("Must be a valid email")
+      .required("Email is required"),
+    email2: Yup.string()
+      .email("Must be a valid email")
+      .required("Email is required"),
+    blood: Yup.string().required("reeeq"),
+    date: Yup.string().required("qsdqsd"),
+  });
 
-  
+  const { user, setUser } = userHook();
+
+  const gettingUser = async () => {
+    try {
+      const userToken = await getUser();
+      setUser(userToken);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    gettingUser() 
-  }, [])
-  return(
-    <AuthNav />
-  )
+    gettingUser();
+  }, []);
+  if (!user) {
+    return (
+      <UserContext.Provider value={{ user, setUser }}>
+        <AuthNav />
+      </UserContext.Provider>
+    );
+  } else {
+    return (
+      <UserContext.Provider value={{ user, setUser }}>
+        <MainNav />
+      </UserContext.Provider>
+    );
+  }
   return (
-    <Screen   >
-      
-      
-
+    <Screen>
       {/* <AppForm
         initialValues={{email:'' , blood:''}}
         handleSubmit={(val)=>{console.log(val)}}
@@ -95,11 +104,10 @@ export default function App() {
 //style={styles.container}
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  } 
-
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 //<AppTimePicker  value={input} handleChange={setInput} />
 //<AppInput onChangeText={setInput} name="idk ma dude" iconColor='white' iconName='email' />

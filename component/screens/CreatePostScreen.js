@@ -1,4 +1,4 @@
-import React from 'react'
+import React , {useContext} from 'react'
 import  * as Yup from 'yup'
 import moment from 'moment';
 import AppForm from './../form/AppForm';
@@ -37,7 +37,8 @@ const handleSubmit = async (data) => {
 
 
 const LoginScreen = () => {
-    
+    const userStore = useContext(UserContext)
+    //userStore.setUser(null)
     return (
         <>
             <AppForm

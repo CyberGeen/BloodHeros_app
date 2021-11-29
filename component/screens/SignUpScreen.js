@@ -1,9 +1,10 @@
-import React from 'react'
+import React , {useContext} from 'react'
 import  * as Yup from 'yup'
 import moment from 'moment';
 import AppForm from './../form/AppForm';
 import AppFormField from './../form/AppFormField';
 import AppSubmitButton from '../form/AppSubmitButton';
+import { signUp } from '../../services/httpUserService';
 
 //----------json imports------
 import jsonBlood from '../json/bloodType.json'
@@ -39,21 +40,25 @@ const initVal = {
     emergencyCall : '' ,
     emergencyInfo : ''
 }
-//form submit handler
-const handleSubmit = async (data) => {
-    try {
-        //const newUser = {emergency_info:{emergencyCall:data.emergencyCall , emergencyInfo} , ...data} = data
-        let {emergencyCall , emergencyInfo , ...rest} = data
-        data = {emergency_info:{emergencyCall , emergencyInfo} , ...rest} 
-        console.log(data)
-    } catch (err) {
-        console.log(err)
-    }
-}
-
 
 const SignUpScreen = () => {
-    
+    const {setUser} = useContext(UserContext)
+    //form submit handler
+    const handleSubmit = async (data) => {
+        try {
+            let {emergencyCall , emergencyInfo , ...rest} = data
+            data = {emergency_info:{emergencyCall , emergencyInfo} , ...rest} 
+            const res = await signUp(data)
+            if(res.response){
+                //FIXME: throw an error
+                console.log(res.response.data)
+                return;
+            }
+           setUser(res)            
+        } catch (err) {
+            console.log(err)
+        }
+    }
     return (
         <ScrollView>
             <AppForm

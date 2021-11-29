@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import  * as Yup from 'yup'
 import AppForm from './../form/AppForm';
 import AppFormField from './../form/AppFormField';
 import AppSubmitButton from '../form/AppSubmitButton';
 import { ScrollView } from 'react-native';
+import {login} from '../../services/httpUserService'
 
 //Yup schema
 const schema = Yup.object().shape({
@@ -15,14 +16,25 @@ const initVal = {
     email:'' ,
     password:''
 }
-//form submit handler
-const handleSubmit = async (data) => {
-    console.log(data)
-}
+
 
 
 const LoginScreen = () => {
-    
+    //form submit handler
+    const {setUser} = useContext(UserContext)
+    const handleSubmit = async (data) => {
+        try {
+            const res = await login(data)
+            if(res === null){
+                //FIXME: throw an error
+                return;
+            }
+           setUser(res)
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
     return (
         <ScrollView>
             <AppForm

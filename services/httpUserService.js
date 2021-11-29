@@ -1,10 +1,11 @@
-import {callApi , getApi} from './httpService'
-import {setStoreToken} from './store'
+import {callApi , getApi , getUser} from './httpService'
+import {setStoreToken , deleteStoreToken} from './store'
 
 const url = 'user/'
 
 const login = async (data) => {
-    return setToken(await callApi(data , url + 'login' )) 
+    const res = await callApi(data , url + 'login' )
+    return setToken(res) 
 }
 
 const signUp = async (data) => {
@@ -16,7 +17,7 @@ const setToken = async (res) => {
     if (res.status === 202 || res.status === 201 ){
          await setStoreToken(res.headers['x-auth-token'])
          //returning null because the promise is resolved 
-         return null
+         return await getUser()
     }
     //else we return the error obj to be handled as an error msg/popUp 
     else {
@@ -32,12 +33,15 @@ const getUserPage = async() => {
 }
 
 //logout , delete token from store
-
+const logout = async () => {
+    await deleteStoreToken()
+}
 
 export {
     login ,
     signUp ,
     getUserPage ,
+    logout ,
     
 }
 
