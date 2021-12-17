@@ -1,4 +1,4 @@
-import React , {useState , useEffect} from 'react'
+import {useState } from 'react'
 
 function userHook() {
      const [user, setUser] = useState()
