@@ -1,5 +1,4 @@
 import axios from 'axios'
-import * as SecureStore from 'expo-secure-store'
 import config from '../component/json/config.json'
 import jwtDecode from 'jwt-decode'
 import { getStoreToken  , deleteStoreToken } from './store'
@@ -13,9 +12,19 @@ const getJWT = async () => {
 }
 
 //sending token everytime we need to as a default header in every CRUD operation
-
-axios.defaults.headers.common['x-auth-token'] = getJWT() 
-
+let setter = 0
+const setDefaultHeader = async () => {
+    try {
+        axios.defaults.headers.common['x-auth-token'] = await getJWT() 
+        //make sure this executes only once on the launch
+        setter++
+    } catch (err) {
+        console.log(err)
+    }
+}
+if(setter === 0) {
+    setDefaultHeader()
+}
 //universall post function
 const callApi = async (data , url) => {
     try {
