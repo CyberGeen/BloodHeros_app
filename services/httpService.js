@@ -70,7 +70,7 @@ const getUser = async () => {
     try {
         const token = await getJWT()
         if( token !== null ) {
-            return jwtDecode(token)
+            return await jwtDecode(token)
         }
         return null
     } catch (error) {

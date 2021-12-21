@@ -10,10 +10,10 @@ import PostContext from '../context/PostContext';
 const Stack = createNativeStackNavigator();
 
 export default PostNav = () => {
-    const {posts , setPosts} = postsHook("idk")
+    const {posts , setPosts} = postsHook()
     return(
         <PostContext.Provider value={{posts , setPosts} } >
-            <Stack.Navigator initialRouteName='Fatha' >
+            <Stack.Navigator initialRouteName='main' >
                 <Stack.Screen 
                 name='main'
                     component={MainPostsScreen}
