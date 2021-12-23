@@ -2,22 +2,19 @@ import React , {useContext  , useEffect } from 'react'
 import { View, Text , FlatList , TouchableOpacity } from 'react-native'
 import PostContext from './../context/PostContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AppInput from '../form/AppInput';
 
 const SinglePost = ({route}) => {
-    //route.setPosts('fooo me')
     const {setPosts , posts} =  useContext(PostContext)
     let currentPost = posts.find( post => post._id === route.params.id )
-    useEffect(()=>{
-        //setPosts("lez gooo")
-        // console.log(currentPost.up_votes)
-        // console.log(currentPost.down_votes)
-        //setPosts(route.params.id , 'UP')
-        //setPosts(route.params.id , 'DOWN')
-    } , [] )
     
+    const handleCommentChange = async (data) => {
+        console.log(data)
+    }
     const renderComment = ({item:comment}) => {
         return(
             <View>
+                <Text> by : {comment.postedBy.name} </Text>
                 <Text>{comment.content.trim()}</Text>
             </View>
         )
@@ -53,6 +50,25 @@ const SinglePost = ({route}) => {
                 keyExtractor={item => item._id}
                 renderItem={renderComment}
             /> 
+            <AppInput 
+                iconName={'comment'}
+                placeholder={'say something nice...'}
+                onPress={()=>console.log('yeet')}
+            >
+            
+            <View>
+                <TouchableOpacity>
+                <MaterialCommunityIcons 
+                name='send-circle-outline'
+                size={30}
+                style={{flexDirection: "row" , paddingTop : 20 , paddingRight: 10 }}
+                color={'grey'}
+            />
+                </TouchableOpacity>
+            </View>
+            
+            </AppInput>
+            
         </View>
     )
 }

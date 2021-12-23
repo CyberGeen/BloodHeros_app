@@ -25,8 +25,6 @@ const setToken = async (res) => {
     }
 }
 
-
-
 //get user
 const getUserPage = async() => {
     return await getApi(url + 'me')
@@ -37,11 +35,16 @@ const logout = async () => {
     await deleteStoreToken()
 }
 
+//general info
+const getGeneralUserInfo = async(userId) => {
+    return await getApi(url + 'general/' + userId )
+}
+
 export {
     login ,
     signUp ,
     getUserPage ,
     logout ,
-    
+    getGeneralUserInfo ,
 }
 

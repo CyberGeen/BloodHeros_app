@@ -1,9 +1,10 @@
 import React from 'react'
-import { View, TextInput } from 'react-native'
+import { View, TextInput , Text } from 'react-native'
 import { StyleSheet } from 'react-native'
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 
-const AppInput = ({ onChangeText , placeholder , iconName , iconColor , containerStyle , iconStyle , ...otherProps}) => {
+const AppInput = ({ onChangeText , placeholder , iconName , iconColor , containerStyle , iconStyle , children , ...otherProps}) => {
+    console.log(children)
     return (
         <View style={[styles.container , containerStyle]} >
             {   
@@ -22,7 +23,8 @@ const AppInput = ({ onChangeText , placeholder , iconName , iconColor , containe
                 placeholder={placeholder} 
                 //put other props dynamicly
                 {...otherProps}
-             />            
+             />
+              {children}
         </View>
     )
 }

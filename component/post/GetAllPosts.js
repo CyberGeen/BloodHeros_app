@@ -30,6 +30,7 @@ const GetAllPosts = ({navigation}) => {
                 />
             </TouchableOpacity>
                 <TouchableOpacity onPress={()=>{navigation.navigate('single', {id : post._id})}} >  
+                    <Text>posted by {post.posted_by.name} </Text>
                     <Text>{post.title}</Text>
                     <Text>{post.description}</Text>
                     <Text>{post.blood_type}</Text>
@@ -39,7 +40,9 @@ const GetAllPosts = ({navigation}) => {
             </View>
         )
     } 
-    
+    // console.log('///////////////////////////////////')
+    // console.log('///////////////////////////////////')
+    // console.log(posts)
     
     return(
         
