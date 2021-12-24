@@ -19,19 +19,15 @@ const MainPostsScreen = ({navigation}) => {
 
                     let tempComment = []
                     post.comments.forEach( comment => {
-                        console.log(comment)
                             getGeneralUserInfo(comment.postedBy).then( res=> {
-                                comment.postedBy = res.data
-                                console.log(comment.postedBy)
+                            comment.postedBy = res.data
                              tempComment.push(comment)
                         } ).catch(err => console.log(err))
                     } )
                     post.comments = tempComment
-                    console.log(post.comments)
                     
                     tempPosts.push(post)
                     setPosts(tempPosts)
-                    //console.log(tempPosts)
                 }).catch(err => console.log(err))
             } )
             

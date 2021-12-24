@@ -33,11 +33,9 @@ function postsHook() {
 
             case 'DOWN':
                 const oldPost2 = posts
-                console.log(checkDownVotes(data))
                 handleVote(data , 'down')
-                console.log(checkDownVotes(data))
                 vote(data , 'D')
-                .then((res) => console.log(res.data))
+                .then((res) => console.log('voted'))
                 .catch(() => setPosts(oldPost2) )
                 //setPosts(oldPost2)
 
@@ -45,11 +43,9 @@ function postsHook() {
                 break;
             case 'CHECK_UP':
                     return checkUpVotes(data)
-                break;
 
             case 'CHECK_DOWN':
                     return checkDownVotes(data)
-                break;
 
                 //---------------REPORT SECTION-------------------
             case 'EDIT_POST':
@@ -121,13 +117,6 @@ function postsHook() {
         return post.down_votes.find(up => up._id === user._id ) ? true : false
     }
    
-    //************* adding vote************//
-    const addUpVote = (postId) => {
-        
-    }
-    const addDownVote = (postId) => {
-        
-    }
     // --------------------- Main Return Statement ----------------------
     return {posts , setPosts }
 }

@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native'
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 
 const AppInput = ({ onChangeText , placeholder , iconName , iconColor , containerStyle , iconStyle , children , ...otherProps}) => {
-    console.log(children)
     return (
         <View style={[styles.container , containerStyle]} >
             {   
