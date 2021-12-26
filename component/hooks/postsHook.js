@@ -24,7 +24,7 @@ function postsHook() {
                 handleVote(data)
                 console.log(checkUpVotes(data))
                 vote(data , 'U')
-                    .then((res) => console.log(res.data))
+                    .then((res) => console.log('voted'))
                     .catch(() => setPosts(oldPost) )
                 //setPosts(oldPost)
                 

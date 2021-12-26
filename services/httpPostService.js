@@ -49,6 +49,11 @@ const reportPost = async(postId) => {
     return await getApi(url + postId + '?report=1')
 }
 
+//get Comments
+const getComments = async(postID) => {
+    return await getApi(url + postID + '/comment' )
+}
+
 getPosts()
 export {
     getPosts ,
@@ -58,6 +63,7 @@ export {
     postComment ,
     deleteComment ,
     vote ,
-    reportPost
+    reportPost ,
+    getComments ,
 }
  
