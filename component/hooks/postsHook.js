@@ -1,6 +1,6 @@
 import {useState , useEffect} from 'react'
 import {getUser} from '../../services/httpService'
-import {vote} from  '../../services/httpPostService'
+import {deleteComment, vote} from  '../../services/httpPostService'
 
 
 function postsHook() {
@@ -52,14 +52,23 @@ function postsHook() {
                 
                 break;
             case 'DELETE_POST':
-                
+                const oldPostDP = posts
+                const newPostsDP = posts.filter( post => post._id !== data )
                 break;
                 //---------------COMMENT SECTION------------------
             case 'ADD_COMMENT':
                 
                 break;
             case 'DELETE_COMMENT':
-                
+                const oldPostDC = posts
+                handleDeleteComment(data)
+                deleteComment(data.postId , data.commentId)
+                    .then()
+                    .catch((err) => {
+                        //FIXME: show offline notification
+                        console.log(err)
+                        setPosts(oldPostDC)
+                    } )
                 break;
             default: 
                     stateHandler(data)
@@ -117,8 +126,23 @@ function postsHook() {
         return post.down_votes.find(up => up._id === user._id ) ? true : false
     }
    
+    //---------------------- Delete Comment -----------------------------
+    const handleDeleteComment = (data) => {
+        const {postId , commentId} = data
+                const newPosts = posts.map( (post) => {
+                    if(post._id === postId){
+                        post.comments = post.comments.filter( comment => comment._id !== commentId )
+                    }
+                    return post
+                } )
+            setPosts(newPosts)
+    }
+
     // --------------------- Main Return Statement ----------------------
     return {posts , setPosts }
+
+
+    
 }
 
 export default postsHook

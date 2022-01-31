@@ -40,9 +40,6 @@ const GetAllPosts = ({navigation}) => {
             </View>
         )
     } 
-    // console.log('///////////////////////////////////')
-    // console.log('///////////////////////////////////')
-    // console.log(posts)
     
     return(
         

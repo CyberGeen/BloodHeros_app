@@ -1,15 +1,21 @@
 import React , {useContext  , useEffect ,useState } from 'react'
-import { View, Text , FlatList , TouchableOpacity , ScrollView } from 'react-native'
+import { View, Text , FlatList , TouchableOpacity , ScrollView , StyleSheet } from 'react-native'
 import PostContext from './../context/PostContext';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import UserContext from './../context/UserContext';
 import AppInput from '../form/AppInput';
 import { postComment } from '../../services/httpPostService';
 import { getComments } from '../../services/httpPostService';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AppButton from '../form/AppButton';
+
 
 const SinglePost = ({route}) => {
     const {setPosts , posts} =  useContext(PostContext)
+    const {user} = useContext(UserContext)
     let currentPost = posts.find( post => post._id === route.params.id )
     const [newComment, setComment] = useState('')
+
+
     useEffect( ()=>{
         //prevent re render if re entering 
         if (!currentPost.gotComments) {getComments(route.params.id).then( (res) => {
@@ -27,9 +33,22 @@ const SinglePost = ({route}) => {
     const renderComment = ({item:comment}) => {
         if(currentPost.gotComments){
             return(
-                <View>
+                <View style={styles.container} >
                     <Text> by : {comment.postedBy.name} </Text>
                     <Text>{comment.content.trim()}</Text>
+                    {
+                        (comment.postedBy._id === user._id ) && (
+                            <>
+                                <TouchableOpacity onPress={() => handleDeleteComment( currentPost._id , comment._id)} >
+                                    <MaterialCommunityIcons
+                                        name='delete'
+                                        size={25} 
+                                        color={'red'} 
+                                        />
+                                </TouchableOpacity>
+                            </>
+                        )
+                    }
                 </View>
             )
             
@@ -65,6 +84,10 @@ const SinglePost = ({route}) => {
             .catch( (err) => console.log(err) )
     }
 
+    const handleDeleteComment = (postId , commentId) => {
+        setPosts({postId , commentId} , "DELETE_COMMENT")
+    }
+
     const header = () => {
         return (
             <>
@@ -90,6 +113,7 @@ const SinglePost = ({route}) => {
             </>
         )
     }
+
     
     const footer = () => {
         if(!currentPost.gotComments){
@@ -122,6 +146,24 @@ const SinglePost = ({route}) => {
                 </AppInput>
         </>) 
     }
+
+    const styles = StyleSheet.create({
+        button: {
+            margin: 5,
+            height: 25,
+            backgroundColor: "red",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 15,
+          },
+          container: {
+            flexDirection: "row",
+          },
+          text: {
+            fontWeight: "600",
+            fontSize: 10,
+          },
+    })
 
     return (
             <FlatList 
