@@ -1,1 +1,3 @@
-FIXME: fix the shitty hooks and useContext shit
+FIXME: handle backend response to not send too much unnecessary data
+TODO: admin have the option to filter by reported posts 
+TODO: creating a post still isnt connected to the backend 

@@ -1,6 +1,6 @@
 import {useState , useEffect} from 'react'
 import {getUser} from '../../services/httpService'
-import {deleteComment, vote} from  '../../services/httpPostService'
+import {deleteComment, deletePost, reportPost, vote} from  '../../services/httpPostService'
 
 
 function postsHook() {
@@ -14,20 +14,16 @@ function postsHook() {
     } , [] )
     const setPosts = (data , type='') => {
         /* 
-            optimistic aproach : update state -> call backend ? do nothing : reverse changes
+            implimentation used mostly in all state handling :
+                optimistic aproach : update state -> call backend ? do nothing : reverse changes
         */
         switch (type) {
             //--------------------VOTE SECTION--------------------
             case 'UP':
                 const oldPost = posts
-                console.log(checkUpVotes(data))
                 handleVote(data)
-                console.log(checkUpVotes(data))
                 vote(data , 'U')
-                    .then((res) => console.log('voted'))
                     .catch(() => setPosts(oldPost) )
-                //setPosts(oldPost)
-                
                 break;
 
 
@@ -35,12 +31,9 @@ function postsHook() {
                 const oldPost2 = posts
                 handleVote(data , 'down')
                 vote(data , 'D')
-                .then((res) => console.log('voted'))
                 .catch(() => setPosts(oldPost2) )
-                //setPosts(oldPost2)
-
-
                 break;
+
             case 'CHECK_UP':
                     return checkUpVotes(data)
 
@@ -51,14 +44,31 @@ function postsHook() {
             case 'EDIT_POST':
                 
                 break;
+
             case 'DELETE_POST':
                 const oldPostDP = posts
                 const newPostsDP = posts.filter( post => post._id !== data )
+                deletePost(data)
+                    .then( (res) => {
+                        setPosts(newPostsDP)
+                    } )
+                    .catch( (err) => {
+                        //FIXME: further notice of offline and server erreur 
+                        console.log(err)
+                        setPosts(oldPostDP)
+                    } )
                 break;
+            
+            case 'REPORT_POST':
+                reportPost(data)
+                .catch( (err) => console.log(err))
+            break;
+
                 //---------------COMMENT SECTION------------------
             case 'ADD_COMMENT':
-                
+                // changed the implimentation to be handled inside the main funtion (signlePost)
                 break;
+
             case 'DELETE_COMMENT':
                 const oldPostDC = posts
                 handleDeleteComment(data)
@@ -138,6 +148,7 @@ function postsHook() {
             setPosts(newPosts)
     }
 
+    
     // --------------------- Main Return Statement ----------------------
     return {posts , setPosts }
 

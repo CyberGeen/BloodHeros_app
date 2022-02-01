@@ -1,5 +1,5 @@
 import React , {useContext  , useEffect ,useState } from 'react'
-import { View, Text , FlatList , TouchableOpacity , ScrollView , StyleSheet } from 'react-native'
+import { View, Text , FlatList , TouchableOpacity , Modal , StyleSheet } from 'react-native'
 import PostContext from './../context/PostContext';
 import UserContext from './../context/UserContext';
 import AppInput from '../form/AppInput';
@@ -9,12 +9,18 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AppButton from '../form/AppButton';
 
 
-const SinglePost = ({route}) => {
+const SinglePost = ({route , navigation }) => {
     const {setPosts , posts} =  useContext(PostContext)
+    
     const {user} = useContext(UserContext)
+    
     let currentPost = posts.find( post => post._id === route.params.id )
+    
+    //comment state
     const [newComment, setComment] = useState('')
-
+    
+    //modal visibility state
+    const [modalVisibility, setModalVisibility] = useState(false);
 
     useEffect( ()=>{
         //prevent re render if re entering 
@@ -61,19 +67,21 @@ const SinglePost = ({route}) => {
     const down = setPosts(route.params.id , 'CHECK_DOWN')
     
 
+    // comment submition logic
 
     const handleCommentSubmit =  () => {
         postComment({content : newComment} , route.params.id )
             .then( (data) => {
                 if(data.response){
+                    //FIXME: indicating an erreur in the server 
                     console.log("error here")
                 }
                 if(data.data){
                     let tempPosts = posts.slice()
-                    //tempPosts.push(posts)
-                    //tempPosts = tempPosts[0]
                     tempPosts = tempPosts.map( (temp) => {
                         if(temp._id === route.params.id ){
+                            // changing the whole comment section to the new comment section we get from the server
+                            // since the comment need to have its own id cant aproach it optimisticly
                             temp.comments = data.data
                         }
                         return temp
@@ -84,10 +92,31 @@ const SinglePost = ({route}) => {
             .catch( (err) => console.log(err) )
     }
 
+    // deleting comment : passing the data to the hook 
     const handleDeleteComment = (postId , commentId) => {
         setPosts({postId , commentId} , "DELETE_COMMENT")
     }
 
+        // handle deleting post : 
+
+        const handleDeletePost = () => {
+            setModalVisibility(false)
+            navigation.navigate('main')
+            setPosts(currentPost , 'DELETE_POST' )
+            //FIXME: add reported animation
+        }
+    
+        // handle reporting a post :
+        
+        const handleReportPost = () => {
+            setPosts(currentPost , 'REPORT_POST' )
+            setModalVisibility(false)
+            //FIXME: add reported animation
+        }
+
+
+    // header and footer got created bcs Flatlist dont accept another scrolable view logic , everything should be included in it
+    // main part of the post
     const header = () => {
         return (
             <>
@@ -105,6 +134,17 @@ const SinglePost = ({route}) => {
                         color={ down?'red':'lightgrey' }
                     />
                 </TouchableOpacity>
+
+                {/* the module button to allow it to be displayed */}
+                <TouchableOpacity
+                    onPress={ () => setModalVisibility(true) }
+                >
+                    <MaterialCommunityIcons 
+                        name='dots-horizontal'
+                        size={20}
+                    />
+                </TouchableOpacity>
+
                 <Text> {currentPost.title } </Text>
                 <Text> {currentPost.description} </Text>
                 <Text> {currentPost.blood_type} </Text>
@@ -114,7 +154,7 @@ const SinglePost = ({route}) => {
         )
     }
 
-    
+    // comment section
     const footer = () => {
         if(!currentPost.gotComments){
             return(
@@ -147,38 +187,99 @@ const SinglePost = ({route}) => {
         </>) 
     }
 
-    const styles = StyleSheet.create({
-        button: {
-            margin: 5,
-            height: 25,
-            backgroundColor: "red",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: 15,
-          },
-          container: {
-            flexDirection: "row",
-          },
-          text: {
-            fontWeight: "600",
-            fontSize: 10,
-          },
-    })
+    
 
     return (
-            <FlatList 
-                data={currentPost.comments}
-                keyExtractor={item => item._id}
-                renderItem={renderComment}
-                //static header can make it as a function
-                ListHeaderComponent={header}
-                ListFooterComponent = { footer()}
 
-            /> 
+        <View>
+            <FlatList 
+                    data={currentPost.comments}
+                    keyExtractor={item => item._id}
+                    renderItem={renderComment}
+                    //static header can make it as a function
+                    ListHeaderComponent={header}
+                    ListFooterComponent = { footer()}
+
+                />
+
+            {/* repeated module from main page (not proud of what i did lmao) */}
+            <Modal
+                    visible = {modalVisibility}
+                    animationType='slide'
+                    presentationStyle='overFullScreen'
+                    transparent={true}
+                    
+                >
+                    <View style={styles.modalContainer} >
+                        <View style={styles.functionContainer} >
+
+                            {/* showing buttons depending on ownership and role in the server */}
+                            
+                            {   
+                                ( user.role === "admin" || user._id === currentPostOwner ) &&
+                                (<TouchableOpacity
+                                    onPress={() => handleDeletePost() }
+                                >
+                                    <MaterialCommunityIcons 
+                                        name='delete'
+                                        size={20}
+                                        color={'red'}
+                                    />
+                                    <Text>Delete</Text>
+                                </TouchableOpacity>)
+                            }
+
+                            {
+                                (   
+                                    ( user.role === "admin" || user._id !== currentPostOwner ) &&
+                                    <TouchableOpacity
+                                        onPress={() => handleReportPost() }
+                                    >
+                                        <MaterialCommunityIcons
+                                            name='alert-octagon'
+                                            size={20}
+                                            color={'red'}
+                                        />
+                                        <Text>Report</Text>
+                                    </TouchableOpacity>
+                                )
+                            }
+
+                            <TouchableOpacity
+                                onPress={() => setModalVisibility(false) }
+                            >
+                                <MaterialCommunityIcons
+                                    name='close'
+                                    size={20}
+                                />
+                            </TouchableOpacity>
+                        </View>                                 
+                    </View>
+                </Modal>
+
+        </View>
             
             
         
     )
 }
+
+const styles = StyleSheet.create({
+    button: {
+        margin: 5,
+        height: 25,
+        backgroundColor: "red",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 15,
+      },
+      container: {
+        flexDirection: "row",
+      },
+      text: {
+        fontWeight: "600",
+        fontSize: 10,
+      },
+})
 
 export default SinglePost

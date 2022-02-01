@@ -1,4 +1,5 @@
 import React , {useContext} from 'react'
+import { ScrollView } from 'react-native';
 import  * as Yup from 'yup'
 import moment from 'moment';
 import AppForm from './../form/AppForm';
@@ -40,7 +41,7 @@ const LoginScreen = () => {
     const userStore = useContext(UserContext)
     //userStore.setUser(null)
     return (
-        <>
+        <ScrollView>
             <AppForm
                 initialValues={initVal}
                 handleSubmit={(val)=>handleSubmit(val)}
@@ -93,7 +94,7 @@ const LoginScreen = () => {
                     label='Create Post'
                 />
             </AppForm>
-        </>
+        </ScrollView>
     )
 }
 
