@@ -1,3 +1,9 @@
 FIXME: handle backend response to not send too much unnecessary data
 TODO: admin have the option to filter by reported posts 
-TODO: creating a post still isnt connected to the backend 
+TODO: every funtion that requires a feedback of changing if either succ or failer we :
+    hooks  : 
+        then  res -> return true 
+        catch -> return false
+
+    main call : 
+        call.then( (res) -> check return value and update ui depending on it (we may need to do a catch toos)  )

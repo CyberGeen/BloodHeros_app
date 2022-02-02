@@ -1,6 +1,6 @@
 import {useState , useEffect} from 'react'
 import {getUser} from '../../services/httpService'
-import {deleteComment, deletePost, reportPost, vote} from  '../../services/httpPostService'
+import {deleteComment, deletePost, editPost, postPost, reportPost, vote} from  '../../services/httpPostService'
 
 
 function postsHook() {
@@ -42,14 +42,34 @@ function postsHook() {
 
                 //---------------REPORT SECTION-------------------
             case 'EDIT_POST':
-                
+                    const oldPostEP = posts
+                    const newPostsEP = posts.map( (post) => {
+                        if(post._id === data.id ){
+                            post.title = data.data.title
+                            post.description = data.data.description
+                            post.blood_type = data.data.blood_type
+                            post.tags = data.data.tags
+                            post.until_donation = data.data.until_donation
+                        }
+                        return post
+                    } )
+                    editPost(data.data , data.id )
+                        .then( (res) => {
+                            // FIXME: show post edited notif
+                            setPosts(newPostsEP)
+                        } )
+                        .catch( (err) => {
+                            //FIXME: show post network error
+                            setPosts(oldPostEP)
+                            console.log(err)
+                        } )
                 break;
 
             case 'DELETE_POST':
                 const oldPostDP = posts
                 const newPostsDP = posts.filter( post => post._id !== data )
                 deletePost(data)
-                    .then( (res) => {
+                    .then( () => {
                         setPosts(newPostsDP)
                     } )
                     .catch( (err) => {
@@ -64,6 +84,18 @@ function postsHook() {
                 .catch( (err) => console.log(err))
             break;
 
+            case 'SUBMIT_POST':
+                postPost(data)
+                    .then( (res) => {
+                        let tempPostsSP = posts
+                        tempPostsSP.push(res.data)
+                        setPosts( tempPostsSP )
+                    } )
+                    .catch((err) => {
+                        //FIXME: show net erreur nutif
+                        console.log(err)
+                    })
+            break;
                 //---------------COMMENT SECTION------------------
             case 'ADD_COMMENT':
                 // changed the implimentation to be handled inside the main funtion (signlePost)

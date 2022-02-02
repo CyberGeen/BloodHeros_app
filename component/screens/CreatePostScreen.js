@@ -1,4 +1,4 @@
-import React , {useContext} from 'react'
+import React , {useContext , useEffect , useState } from 'react'
 import { ScrollView } from 'react-native';
 import  * as Yup from 'yup'
 import moment from 'moment';
@@ -10,6 +10,7 @@ import AppSubmitButton from '../form/AppSubmitButton';
 import jsonBlood from '../json/bloodType.json'
 import jsonCities from '../json/cities.json' 
 import jsonTag from '../json/tags.json'
+import PostContext from './../context/PostContext';
 
 currentDate = moment().format('YYYY-MM-DD')
 
@@ -23,7 +24,8 @@ const schema = Yup.object().shape({
     until_donation : Yup.string().label('Date Of need')
 })
 //initial values
-const initVal = {
+// to reset :  
+const initVal0 = {
     title:'' ,
     description:'' ,
     blood_type :'' ,
@@ -31,20 +33,61 @@ const initVal = {
     city:'' ,
     until_donation : ''
 }
-//form submit handler
-const handleSubmit = async (data) => {
-    console.log(data)
+// used if we are on edit mode
+let initVal = {
+    title:'' ,
+    description:'' ,
+    blood_type :'' ,
+    tags:'' ,
+    city:'' ,
+    until_donation : ''
 }
 
 
-const LoginScreen = () => {
-    const userStore = useContext(UserContext)
-    //userStore.setUser(null)
+const CreatePostScreen = ({route , navigation }) => {
+
+    const {setPosts} = useContext(PostContext)
+    // indicating the mode wether we are editing or creating a post
+    const [editMode, setEditMode] = useState(false);
+
+    //form submit handler
+    const handleSubmit = (data) => {
+        setPosts(data , 'SUBMIT_POST' )
+        initVal = initVal0
+        navigation.navigate('main')
+    }
+
+
+    // handling post edition if there is : 
+    const handlePostEdit = (data) => {
+        setPosts({id:route.params.id , data } , 'EDIT_POST' )
+        //changing back to the main funcionality of creating a post
+        initVal = initVal0
+        setEditMode(false)
+        // cleaning the state of Formik
+        // returning to the main post we wanted to edit
+        navigation.navigate('single' , {id : route.params.id } )
+    }
+
+    // if a post calls for edits we change the state of Formik to the post one
+    useEffect(  () => {
+        if(route.params){
+            setEditMode(true)
+            initVal = route.params.state
+        }
+        //update every call -> every change of route params
+    }  , [route.params] )
+
     return (
         <ScrollView>
             <AppForm
                 initialValues={initVal}
-                handleSubmit={(val)=>handleSubmit(val)}
+                handleSubmit={(val)=> {
+                    if(!editMode){
+                        return handleSubmit(val)
+                    }
+                    return handlePostEdit(val)
+                } }
                 schema={schema}
             >
                 <AppFormField
@@ -91,11 +134,13 @@ const LoginScreen = () => {
                     minDate={currentDate}
                 />
                 <AppSubmitButton 
-                    label='Create Post'
+                    label={
+                            editMode ? 'Submit' : 'Create Post' 
+                        }
                 />
             </AppForm>
         </ScrollView>
     )
 }
 
-export default LoginScreen
+export default CreatePostScreen

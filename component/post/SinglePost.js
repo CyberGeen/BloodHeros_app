@@ -114,6 +114,22 @@ const SinglePost = ({route , navigation }) => {
             //FIXME: add reported animation
         }
 
+        // handle edit post :
+
+        const handleEditPost = () => {
+            setModalVisibility(false)
+            navigation.navigate('create post' , {
+                state : {
+                    title : currentPost.title ,
+                    description : currentPost.description ,
+                    blood_type : currentPost.blood_type ,
+                    tags : currentPost.tags ,
+                    city : currentPost.city ,
+                    until_donation : currentPost.until_donation 
+                },
+                id : currentPost._id
+            } )
+        }
 
     // header and footer got created bcs Flatlist dont accept another scrolable view logic , everything should be included in it
     // main part of the post
@@ -149,6 +165,7 @@ const SinglePost = ({route , navigation }) => {
                 <Text> {currentPost.description} </Text>
                 <Text> {currentPost.blood_type} </Text>
                 <Text> {currentPost.city} </Text>
+                <Text> {currentPost.until_donation} </Text>
                 <Text>---------- comments ----------------</Text>
             </>
         )
@@ -216,8 +233,9 @@ const SinglePost = ({route , navigation }) => {
                             {/* showing buttons depending on ownership and role in the server */}
                             
                             {   
-                                ( user.role === "admin" || user._id === currentPostOwner ) &&
-                                (<TouchableOpacity
+                                ( user.role === "admin" || user._id === currentPost.posted_by._id ) &&
+                                (
+                                <TouchableOpacity
                                     onPress={() => handleDeletePost() }
                                 >
                                     <MaterialCommunityIcons 
@@ -226,12 +244,31 @@ const SinglePost = ({route , navigation }) => {
                                         color={'red'}
                                     />
                                     <Text>Delete</Text>
-                                </TouchableOpacity>)
+                                </TouchableOpacity>
+                                
+                                
+                                )
+                            }
+
+                            {
+                                user._id === currentPost.posted_by._id && (
+
+                                    <TouchableOpacity
+                                        onPress={() => handleEditPost() }
+                                    >
+                                        <MaterialCommunityIcons 
+                                            name='pencil'
+                                            size={20}
+                                            color={'black'}
+                                        />
+                                        <Text>Edit</Text>
+                                    </TouchableOpacity>
+                                )
                             }
 
                             {
                                 (   
-                                    ( user.role === "admin" || user._id !== currentPostOwner ) &&
+                                    ( user.role === "admin" || user._id !== currentPost.posted_by._id ) &&
                                     <TouchableOpacity
                                         onPress={() => handleReportPost() }
                                     >

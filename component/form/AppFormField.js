@@ -14,7 +14,8 @@ const AppFormField = ({type='text' ,label , name , placeholder , iconColor , ico
         return (
             <> 
                 <Text>{label}</Text>
-                <AppInput 
+                <AppInput
+                    value={values[name]} 
                     onChangeText={handleChange(name)} 
                     placeholder={placeholder} 
                     iconColor={iconColor} 

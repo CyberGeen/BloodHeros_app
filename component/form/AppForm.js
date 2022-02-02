@@ -9,6 +9,7 @@ const AppForm = ({initialValues , handleSubmit , schema , children}) => {
           onSubmit={handleSubmit}
           initialValues={initialValues}
           validationSchema={schema}
+          enableReinitialize={true}
         >
           {() => {
             return(
