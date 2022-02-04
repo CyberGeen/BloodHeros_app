@@ -10,6 +10,7 @@ import AppSubmitButton from '../form/AppSubmitButton';
 import jsonBlood from '../json/bloodType.json'
 import jsonCities from '../json/cities.json' 
 import jsonTag from '../json/tags.json'
+
 import PostContext from './../context/PostContext';
 
 currentDate = moment().format('YYYY-MM-DD')

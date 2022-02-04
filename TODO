@@ -1,5 +1,5 @@
 FIXME: handle backend response to not send too much unnecessary data
-TODO: admin have the option to filter by reported posts 
+TODO: add upvote counte
 TODO: every funtion that requires a feedback of changing if either succ or failer we :
     hooks  : 
         then  res -> return true 

@@ -6,12 +6,97 @@ import {deleteComment, deletePost, editPost, postPost, reportPost, vote} from  '
 function postsHook() {
     //getting the id once only , preventing multiple calls
     const [user , setUser] = useState()
+    // posts state
     const [posts, stateHandler] = useState()
+    // search data state
+    const [searchData , setSearchData] = useState({
+        title : '' ,
+        blood_type :'' ,
+        tags:'' ,
+        city:'' ,
+        isReported : ''
+    })
+    // old posts state
+    const [oldPosts, setOldPosts] = useState(posts);
     useEffect( ()=>{
         getUser().then( (res ) => {
             setUser(res)
         } ).catch( (err)=>console.log(err) )
     } , [] )
+
+    // showing posts depending on search value
+    useEffect ( () => {
+        //search logic : 
+        if(!oldPosts){
+            setOldPosts(posts)
+        }
+        let newPostsSL = oldPosts 
+        if(searchData.blood_type){
+            newPostsSL = newPostsSL.filter( (post) => {post.blood_type == searchData.blood_type} )
+        }
+        if(searchData.tags){
+            newPostsSL = newPostsSL.filter( (post) => post.tags == searchData.tags )
+        }
+        if(searchData.city){
+            
+            newPostsSL = newPostsSL.filter( (post) => post.city == searchData.city )
+        }
+        if(searchData.isReported){
+            newPostsSL = newPostsSL.filter( (post) => post.isReported === true )
+        }
+        if(searchData['sort']){
+            //merge sort
+            newPostsSL = flexDevidingMerg(newPostsSL)
+        }
+        // lef last because the most demanding
+        if(searchData.title){
+            newPostsSL = newPostsSL.filter((post)=>post.title.toLowerCase().includes(searchData.title.toLowerCase()) )
+        }
+
+        setPosts(newPostsSL)
+
+    } , [searchData] )
+
+
+    // merg sorting posts
+    const flexDevidingMerg = (arr) => { 
+        if (arr.length <= 1){
+          return arr;
+        } 
+        const middle = Math.floor(arr.length/2)
+        const left = arr.slice(0 , middle)
+        const right = arr.slice(middle)
+        return MergeSort(  flexDevidingMerg(left) , flexDevidingMerg(right)  )
+    }
+    const MergeSort = (left , right) => {
+        const arr=[] ;
+        const key = searchData.sort 
+        switch (key) {
+          case 'new':
+            //compare the date of publishing
+           while(left.length && right.length){
+             if(left[0].data < right[0].date ){
+                arr.push(left.shift())
+             }else{
+                arr.push(right.shift())
+             }
+           }
+            break;    
+          default:
+           while(left.length && right.length){
+             if(left[0].ud_rate > right[0].ud_rate ){
+                arr.push(left.shift())
+             }else{
+                arr.push(right.shift())
+             }
+           }
+            break;
+        }
+       //quite once one is umpty => there is one var left concat it with the rest
+       return arr.concat(left.concat(right))
+     } 
+
+     
     const setPosts = (data , type='') => {
         /* 
             implimentation used mostly in all state handling :
@@ -40,7 +125,6 @@ function postsHook() {
             case 'CHECK_DOWN':
                     return checkDownVotes(data)
 
-                //---------------REPORT SECTION-------------------
             case 'EDIT_POST':
                     const oldPostEP = posts
                     const newPostsEP = posts.map( (post) => {
@@ -79,11 +163,26 @@ function postsHook() {
                     } )
                 break;
             
+                //---------------REPORT SECTION-------------------
             case 'REPORT_POST':
                 reportPost(data)
                 .catch( (err) => console.log(err))
             break;
 
+            //--------------Searching--------------------------
+            case 'REPORT_MODE':
+                if(data){
+                    setSearchData({...searchData , isReported:true})
+                    break;
+                }
+                setSearchData({...searchData , isReported:false})
+            break;
+
+            case 'SEARCH_POST':
+                setSearchData({...searchData , ...data})
+            break;
+                    
+                //--------------submitting a post------------------
             case 'SUBMIT_POST':
                 postPost(data)
                     .then( (res) => {
@@ -114,6 +213,9 @@ function postsHook() {
                 break;
             default: 
                     stateHandler(data)
+                    if(!oldPosts){
+                        setOldPosts(data)
+                    }
                 break;
         }
     }

@@ -18,7 +18,7 @@ const AppButton = ({label , handleClick , ...otherProps}) => {
 const styles = StyleSheet.create({
   button: {
     flex: 1,
-    margin: 80,
+    margin: 25,
     height: 35,
     backgroundColor: "lightblue",
     alignItems: "center",
