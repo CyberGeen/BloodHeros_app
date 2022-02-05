@@ -13,7 +13,7 @@ const MainNav = () => {
     const {posts , setPosts} = postsHook()
     return (
         <PostContext.Provider value={{posts , setPosts} } >
-            <NavigationContainer>
+             <NavigationContainer>            
                 <Tab.Navigator >
                     <Tab.Screen name="create post" component={CreatePostScreen} />
                     <Tab.Screen name="loggout" component={TempLogOutScreen} />

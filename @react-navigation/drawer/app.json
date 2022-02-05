@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "BloodHeros_app",
-    "slug": "BloodHeros_app",
-    "version": "1.16.0",
+    "name": "drawer",
+    "slug": "drawer",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -27,7 +27,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "description": ""
+    }
   }
 }

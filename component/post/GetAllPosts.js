@@ -120,6 +120,7 @@ const GetAllPosts = ({navigation}) => {
 
         return(
             <View>
+                <Text>up vote count : {post.up_votes.length}</Text>
                 <TouchableOpacity onPress={() => setPosts(post._id , 'UP') } >
                 <MaterialCommunityIcons
                     name={'chevron-up'}
@@ -168,6 +169,13 @@ const GetAllPosts = ({navigation}) => {
         setPosts(currentPostId , 'REPORT_POST' )
         setModalVisibility(false)
         //FIXME: add reported animation
+    }
+
+    // handle declining a report : 
+
+    const handleDeclineReport = () => {
+        setPosts(currentPostId , 'DECLINE_REPORT' )
+        setModalVisibility(false)
     }
 
     // object comparing
@@ -235,6 +243,23 @@ const GetAllPosts = ({navigation}) => {
                                 </TouchableOpacity>
                             )
                         }
+
+                        {
+                                user.role === "admin" && (
+                                    <TouchableOpacity
+                                        onPress={ handleDeclineReport }
+                                    >
+                                        <View>
+                                            <MaterialCommunityIcons 
+                                                name='alert-remove-outline'
+                                                color={'red'}
+                                                size={20}
+                                            />
+                                            <Text>Decline Report</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            }
 
                         <TouchableOpacity
                             onPress={() => setModalVisibility(false) }

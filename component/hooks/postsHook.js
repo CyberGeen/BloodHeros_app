@@ -1,7 +1,7 @@
 import {useState , useEffect} from 'react'
 import {getUser} from '../../services/httpService'
 import {deleteComment, deletePost, editPost, postPost, reportPost, vote} from  '../../services/httpPostService'
-
+import {declinePostReport} from '../../services/httpAdminService'
 
 function postsHook() {
     //getting the id once only , preventing multiple calls
@@ -168,7 +168,35 @@ function postsHook() {
                 reportPost(data)
                 .catch( (err) => console.log(err))
             break;
-
+                    // Declining reports doesnt update the UI because its too demanding operation
+                    //to let the state of search lessen to Posts change all the time and apply changes
+            case 'DECLINE_REPORT':
+                let tempOldPostsDR = oldPosts
+                let tempPostsDR = posts 
+                declinePostReport(data)
+                    .then( () => {
+                        tempPostsDR = tempPostsDR.map( (post) => {
+                            if(post._id === data ){
+                                post.isReported = false
+                            }
+                            return post
+                        } )
+                        // update in main posts (doesnt include all posts)
+                        setPosts(tempPostsDR)
+                        //update the main backup data
+                        tempOldPostsDR = tempOldPostsDR.map( (post) => {
+                            if(post._id === data ){
+                                post.isReported = false
+                            }
+                            return post
+                        } )
+                        setOldPosts(tempOldPostsDR)
+                    } )
+                    .catch( (err) => {
+                        //FIXME: show net erreur 
+                        console.log(err)
+                    } )
+            break;
             //--------------Searching--------------------------
             case 'REPORT_MODE':
                 if(data){
