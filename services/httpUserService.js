@@ -1,4 +1,4 @@
-import {callApi , getApi , getUser} from './httpService'
+import {callApi , getApi , getUser , putApi } from './httpService'
 import {setStoreToken , deleteStoreToken} from './store'
 
 const url = 'user/'
@@ -11,6 +11,10 @@ const login = async (data) => {
 const signUp = async (data) => {
     return setToken(await callApi(data , url + 'signup' ))
 }
+
+const editUser = async (data) => {
+    return await putApi( url + 'update' , data )
+} 
 
 const setToken = async (res) => {
     //if the status is okey we should save the token
@@ -46,5 +50,6 @@ export {
     getUserPage ,
     logout ,
     getGeneralUserInfo ,
+    editUser ,
 }
 

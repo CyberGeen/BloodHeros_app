@@ -7,3 +7,10 @@ TODO: every funtion that requires a feedback of changing if either succ or faile
 
     main call : 
         call.then( (res) -> check return value and update ui depending on it (we may need to do a catch toos)  )
+
+
+TODO: api delete account will result to delete all posts related to that account and general data of the person gonna be called 
+name: deleted account , id : same , blood : same -> to not break the dependencies 
+its too demanding to filter all their comment 
+
+TODO: when updating a user email we should check if the email exists on the api and send an error status
