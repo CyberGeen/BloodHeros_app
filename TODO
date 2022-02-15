@@ -14,3 +14,5 @@ name: deleted account , id : same , blood : same -> to not break the dependencie
 its too demanding to filter all their comment 
 
 TODO: when updating a user email we should check if the email exists on the api and send an error status
+
+TODO: stop DB from sending password and unecessary data (a lot of routes send that including login)

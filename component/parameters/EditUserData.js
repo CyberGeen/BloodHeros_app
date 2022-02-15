@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Modal, ScrollView } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { editUser, getUserPage } from "../../services/httpUserService";
+import { editUser, getUserPage , deleteAccount , logout } from "../../services/httpUserService";
 
 // form imports
 import * as Yup from "yup";
@@ -12,6 +12,7 @@ import AppSubmitButton from "../form/AppSubmitButton";
 import jsonBlood from "../json/bloodType.json";
 import jsonCities from "../json/cities.json";
 import jsonGender from "../json/gender.json";
+import UserContext from './../context/UserContext';
 
 let initVal = {
   name: "",
@@ -30,6 +31,11 @@ const initValPass = {
   newPassword : "" ,
   newPasswordConfirmation : "" ,
 }
+
+const initValDel = {
+  password : ""
+}
+
 
 const schema = Yup.object().shape({
   email: Yup.string()
@@ -55,6 +61,10 @@ const passwordSchema = Yup.object().shape({
   newPassword: Yup.string().required("Password is required").label("New Password"),
   newPasswordConfirmation: Yup.string().required("Password is required").label("New Password Confirmation"),
 
+})
+
+const delAccSchema = Yup.object().shape({
+  password: Yup.string().required("Password is required").label("Password"),
 })
 
 const EditUserData = () => {
@@ -105,8 +115,8 @@ const EditUserData = () => {
         gender: initDataEdit.gender,
         city: initDataEdit.city,
         blood_type: initDataEdit.blood_type,
-        emergencyCall: initDataEdit.emergency_info.emergencyCall,
-        emergencyInfo: initDataEdit.emergency_info.emergencyInfo,
+        emergencyCall: initDataEdit.emergency_info?initDataEdit.emergency_info.emergencyCall:null,
+        emergencyInfo: initDataEdit.emergency_info?initDataEdit.emergency_info.emergencyInfo:null,
       };
     }
   }, [initDataEdit]);
@@ -294,6 +304,35 @@ const EditUserData = () => {
     )
   }
 
+  // -------------------------- handle delete acc ------------------
+  const {setUser} = useContext(UserContext)
+  
+  const handleDeleteAccount = (data) => {
+    // pass the password and clear states
+    //console.log(data)
+    deleteAccount(data)
+      .then( (res)=>{
+        if( res.response &&  res.response.status === 400 ){
+          setEditDataError(res.response.data.message)
+          return ;
+        }
+        //loggout and clear the states
+        if(editDataError !== null ){
+          setEditDataError(null)
+        }
+        
+        logout()
+          .then( () => setUser(null) )
+
+      } )
+      .catch((err)=>{
+        console.log(err)
+        //FIXME: network erreur 
+      })
+  }
+
+
+
   // -------------------------- main return ---------------------------
   return (
     <>
@@ -351,10 +390,37 @@ const EditUserData = () => {
       </Modal>
 
       <Modal visible={deleteAccmodal}>
-        <TouchableOpacity onPress={() => setDeleteAccModal(false)}>
+        <TouchableOpacity onPress={() => {
+          setDeleteAccModal(false)
+          setEditDataError(null)
+        }}>
           <MaterialCommunityIcons name="close" size={20} />
         </TouchableOpacity>
-        <Text>delete acc</Text>
+        <AppForm
+            initialValues={initValDel}
+            schema={delAccSchema}
+            handleSubmit={(data) => handleDeleteAccount(data)}
+          >
+            <AppFormField
+              type="text"
+              name="password"
+              iconName="lock"
+              label="enter your password to delete your account :"
+              placeholder="enter your password confirmation "
+              secureTextEntry={true}
+            />
+            {
+              editDataError && (
+                <>
+                  <Text> {editDataError} </Text>
+                </>
+              )
+            }
+             <AppSubmitButton label="Delete Account" />
+          </AppForm>
+
+         
+
       </Modal>
     </>
   );

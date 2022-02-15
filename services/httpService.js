@@ -11,19 +11,22 @@ const getJWT = async () => {
     return await getStoreToken()
 }
 
+
+
 //sending token everytime we need to as a default header in every CRUD operation
-let setter = 0
 const setDefaultHeader = async () => {
     try {
         axios.defaults.headers.common['x-auth-token'] = await getJWT() 
         //make sure this executes only once on the launch
-        setter++
     } catch (err) {
         console.log(err)
     }
 }
-if(setter === 0) {
+let counter = 0 
+
+if (counter === 0){
     setDefaultHeader()
+    counter++
 }
 //universall post function
 const callApi = async (data , url) => {
@@ -45,9 +48,9 @@ const getApi = async (url) => {
     }
 }
 
-const deleteApi = async (url) => {
+const deleteApi = async (url , data = null ) => {
     try {
-        const res = await axios.delete( apiUrl + url)
+        const res = await axios.delete( apiUrl + url ,{ data })
         return(res)
     }
     catch (error) {
@@ -95,6 +98,7 @@ export {
     getApi , 
     deleteApi ,
     putApi ,
-    deleteUser
+    deleteUser ,
+    setDefaultHeader
 }
 

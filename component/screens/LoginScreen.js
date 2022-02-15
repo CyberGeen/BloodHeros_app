@@ -5,6 +5,7 @@ import AppFormField from './../form/AppFormField';
 import AppSubmitButton from '../form/AppSubmitButton';
 import { ScrollView } from 'react-native';
 import {login} from '../../services/httpUserService'
+import UserContext from '../context/UserContext';
 
 //Yup schema
 const schema = Yup.object().shape({
@@ -30,7 +31,6 @@ const LoginScreen = () => {
                 return;
             }
            setUser(res)
-
         } catch (err) {
             console.log(err)
         }

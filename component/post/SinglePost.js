@@ -24,7 +24,17 @@ const SinglePost = ({route , navigation }) => {
 
     useEffect( ()=>{
         //prevent re render if re entering 
-        if (!currentPost.gotComments) {getComments(route.params.id).then( (res) => {
+        if (!currentPost.gotComments) {
+            if(currentPost.comments.length === 0  ){
+                let newPosts = [...posts]
+                newPosts.forEach( (post => {
+                    if(post._id === route.params.id ){
+                        post.gotComments = true
+                    }
+                } ) )
+                setPosts(newPosts)
+            }
+            getComments(route.params.id).then( (res) => {
             let newPosts = [...posts]
             newPosts.forEach( (post => {
                 if(post._id === route.params.id ){

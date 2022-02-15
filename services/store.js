@@ -23,7 +23,7 @@ const getStoreToken = async () => {
 //delete store token
 const deleteStoreToken = async () => {
     try {
-        await SecureStore.deleteItemAsync( key )
+        return await SecureStore.deleteItemAsync( key )
     } catch (error) {
         console.log(error)
     }

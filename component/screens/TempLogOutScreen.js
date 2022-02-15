@@ -5,8 +5,13 @@ import { logout } from '../../services/httpUserService'
 const TempLogOutScreen = () => {
     const {setUser} = useContext(UserContext)
     const handleLoggout =async () => {
-        await logout()
-        setUser(null)
+        try {
+            await logout()
+            setUser(null)
+            
+        } catch (error) {
+            console.log(error)
+        }
     }
     return (
         <View>

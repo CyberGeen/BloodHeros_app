@@ -5,6 +5,7 @@ import MainUiParams from './../parameters/MainUiParams';
 import EditUserData from './../parameters/EditUserData';
 import ShowUserData from './../parameters/ShowUserData';
 import TempLogOutScreen from './TempLogOutScreen';
+import SinglePost from './../post/SinglePost';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,8 @@ const ParameterScreen = () => {
         <Stack.Screen name='edit' component={EditUserData} /> 
         <Stack.Screen name='user' component={ShowUserData} /> 
         <Stack.Screen name='logout' component={TempLogOutScreen} />
+        <Stack.Screen name='single' component={SinglePost} />
+        
     </Stack.Navigator>
   )
 }

@@ -1,4 +1,4 @@
-import {callApi , getApi , getUser , putApi } from './httpService'
+import {callApi , deleteApi, getApi , getUser , putApi , setDefaultHeader } from './httpService'
 import {setStoreToken , deleteStoreToken} from './store'
 
 const url = 'user/'
@@ -17,15 +17,20 @@ const editUser = async (data) => {
 } 
 
 const setToken = async (res) => {
-    //if the status is okey we should save the token
-    if (res.status === 202 || res.status === 201 ){
-         await setStoreToken(res.headers['x-auth-token'])
-         //returning null because the promise is resolved 
-         return await getUser()
+    try {
+        //if the status is okey we should save the token
+        if (res.status === 202 || res.status === 201 ){
+            await setStoreToken(res.headers['x-auth-token'])
+            await setDefaultHeader()
+            //returning null because the promise is resolved 
+            return await getUser()
     }
     //else we return the error obj to be handled as an error msg/popUp 
     else {
         return res
+    }
+    } catch (error) {
+        console.log(error)
     }
 }
 
@@ -36,12 +41,20 @@ const getUserPage = async() => {
 
 //logout , delete token from store
 const logout = async () => {
-    await deleteStoreToken()
+    try {
+        return await deleteStoreToken()
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 //general info
 const getGeneralUserInfo = async(userId) => {
     return await getApi(url + 'general/' + userId )
+}
+
+const deleteAccount = async(data)  => {
+    return await deleteApi(url + 'delete' , data )
 }
 
 export {
@@ -51,5 +64,6 @@ export {
     logout ,
     getGeneralUserInfo ,
     editUser ,
+    deleteAccount ,
 }
 
