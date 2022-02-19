@@ -1,4 +1,7 @@
 FIXME: handle backend response to not send too much unnecessary data
+
+FIXME: show server erreur and prevent login when server is down 
+
 TODO: add upvote counte
 TODO: every funtion that requires a feedback of changing if either succ or failer we :
     hooks  : 
@@ -16,3 +19,8 @@ its too demanding to filter all their comment
 TODO: when updating a user email we should check if the email exists on the api and send an error status
 
 TODO: stop DB from sending password and unecessary data (a lot of routes send that including login)
+
+TODO: in User Data show his Qr code , and give the option to download it 
+
+TODO: a page to scan QR code , button to scan Qr -> if auth : scan ? ask permision
+      -> show a camera box , and data under it 

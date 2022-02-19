@@ -1,7 +1,10 @@
-import { View, Text , TouchableOpacity , FlatList } from 'react-native'
+import { View, Text , TouchableOpacity , FlatList , Modal  } from 'react-native'
+
 import React , {useEffect , useState  }  from 'react'
 import { getUserPage } from '../../services/httpUserService'
 import {getPosts} from '../../services/httpPostService'
+import QRCode from 'react-native-qrcode-svg'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import cityJson from '../json/cities.json'
 
@@ -15,7 +18,8 @@ const ShowUserData = ({navigation}) => {
   const [userData, setUserData] = useState(null)
   // storing user posts 
   const [userPosts, setUserPosts] = useState(null)
-
+  // modal state
+  const [QrModal, setQrModal] = useState(false)
 
 
   useEffect( () => {
@@ -48,10 +52,18 @@ const ShowUserData = ({navigation}) => {
     }
   } , [userData] )
 
+  const handleSaveQr = () => {
+    ToastAndroid.show('Saved to gallery !!', ToastAndroid.SHORT)
+  }
 
   const renderUserData = () => {
     return(
       <>
+      <TouchableOpacity
+       onPress={() => setQrModal(true)}
+      >
+        <QRCode value={userData._id} />
+      </TouchableOpacity>
         <Text>name : {userData.name} </Text>
         <Text>blood type : {userData.blood_type} </Text>
         <Text>points : {userData.score} </Text>
@@ -121,6 +133,18 @@ const ShowUserData = ({navigation}) => {
     <View>
       {renderUserData()}
       {renderUserPosts()}
+      <Modal
+        visible={QrModal}
+      >
+        <TouchableOpacity onPress={() => {
+          setQrModal(false)        
+          }
+          }>
+          <MaterialCommunityIcons name="close" size={20} />
+          
+        </TouchableOpacity>
+        <QRCode value={userData._id} />
+      </Modal>
     </View>
   )
 

@@ -57,6 +57,10 @@ const deleteAccount = async(data)  => {
     return await deleteApi(url + 'delete' , data )
 }
 
+const getEmergencyData = async(id) => {
+    return await getApi(url + 'emergency/' + id )
+}
+
 export {
     login ,
     signUp ,
@@ -65,5 +69,6 @@ export {
     getGeneralUserInfo ,
     editUser ,
     deleteAccount ,
+    getEmergencyData ,
 }
 

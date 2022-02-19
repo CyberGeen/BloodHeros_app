@@ -1,7 +1,27 @@
-import { View, Text , TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text , TouchableOpacity , StyleSheet } from 'react-native'
+import React , {useState , useEffect } from 'react'
+import { BarCodeScanner } from 'expo-barcode-scanner'
 
 const MainUiParams = ({navigation}) => {
+    // permission state
+    const [hasCameraPermission, setHasCameraPermission] = useState(null)
+    
+    
+
+
+    const askCammeraPermission = () => {
+        (async () => {
+            const {status} = await BarCodeScanner.requestPermissionsAsync()
+            setHasCameraPermission(status === 'granted')
+            if(status === 'granted' ){
+                navigation.navigate('scanQr')
+            }
+            console.log(status)
+        } )()
+    }
+
+
+
   return (
     <>
         <TouchableOpacity
@@ -15,6 +35,17 @@ const MainUiParams = ({navigation}) => {
             <Text>Account Information</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity
+            onPress={ () => {
+                if(hasCameraPermission){
+                    return navigation.navigate('scanQr')
+                }
+                    askCammeraPermission()
+                } }
+        >
+            <Text>Scan user Qr</Text>
+        </TouchableOpacity>
+
         {/* on press show a modal confirming logout */}
         <TouchableOpacity
             onPress={() => navigation.navigate('logout') }
@@ -24,5 +55,7 @@ const MainUiParams = ({navigation}) => {
     </>
   )
 }
+
+
 
 export default MainUiParams
