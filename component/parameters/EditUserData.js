@@ -13,6 +13,7 @@ import jsonBlood from "../json/bloodType.json";
 import jsonCities from "../json/cities.json";
 import jsonGender from "../json/gender.json";
 import UserContext from './../context/UserContext';
+import StackHeader from './../common/StackHeader';
 
 let initVal = {
   name: "",
@@ -67,7 +68,7 @@ const delAccSchema = Yup.object().shape({
   password: Yup.string().required("Password is required").label("Password"),
 })
 
-const EditUserData = () => {
+const EditUserData = ({navigation}) => {
   // handles the poping of the data edition modal
   const [datamodal, setDataModal] = useState(false);
   // handles the new password modal
@@ -121,6 +122,11 @@ const EditUserData = () => {
     }
   }, [initDataEdit]);
 
+  useEffect( ()=>{
+    navigation.setOptions({
+      headerLeft : () => { return (<StackHeader navigation={navigation} route="main" /> )}
+  })
+  } , [] )
 
   const handleSubmitEdits = (data) => {
     let { emergencyCall, emergencyInfo, ...rest } = data;

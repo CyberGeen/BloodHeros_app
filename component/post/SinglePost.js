@@ -7,6 +7,7 @@ import { postComment } from '../../services/httpPostService';
 import { getComments } from '../../services/httpPostService';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AppButton from '../form/AppButton';
+import StackHeader from '../common/StackHeader';
 
 
 const SinglePost = ({route , navigation }) => {
@@ -24,6 +25,9 @@ const SinglePost = ({route , navigation }) => {
 
     useEffect( ()=>{
         //prevent re render if re entering 
+        navigation.setOptions({ title: currentPost.title ,
+            headerLeft : () => { return (<StackHeader navigation={navigation} route="main" /> )}
+        })
         if (!currentPost.gotComments) {
             if(currentPost.comments.length === 0  ){
                 let newPosts = [...posts]

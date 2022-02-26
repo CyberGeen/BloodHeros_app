@@ -4,8 +4,9 @@ import { BarCodeScanner } from 'expo-barcode-scanner'
 import { getEmergencyData } from '../../services/httpUserService'
 
 import jsonCities from '../json/cities.json'
+import StackHeader from './../common/StackHeader';
 
-const ScanUserQr = () => {
+const ScanUserQr = ({navigation}) => {
   //QrCode holder
   const [QrCode, setQrCode] = useState(null)
   //if scanned indicateur
@@ -38,6 +39,11 @@ const ScanUserQr = () => {
     }
   } , [QrCode] )
 
+  useEffect( () => {
+    navigation.setOptions({
+      headerLeft : () => { return (<StackHeader navigation={navigation} route="main" /> )}
+  })
+  } )
 
   const handleBarCodeScan = ({data}) => {
 

@@ -23,7 +23,7 @@ const MainUiParams = ({navigation}) => {
 
 
   return (
-    <>
+    <View style={{marginTop : 35}} >
         <TouchableOpacity
             onPress={() => navigation.navigate('user') }
         >
@@ -52,7 +52,7 @@ const MainUiParams = ({navigation}) => {
         >
             <Text>Logout</Text>
         </TouchableOpacity>
-    </>
+    </View>
   )
 }
 

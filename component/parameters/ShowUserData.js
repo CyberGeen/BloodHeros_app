@@ -7,6 +7,7 @@ import QRCode from 'react-native-qrcode-svg'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 import cityJson from '../json/cities.json'
+import StackHeader from './../common/StackHeader';
 
 const ShowUserData = ({navigation}) => {
 
@@ -23,6 +24,12 @@ const ShowUserData = ({navigation}) => {
 
 
   useEffect( () => {
+    
+    navigation.setOptions({
+        headerLeft : () => { return (<StackHeader navigation={navigation} route="main" /> )}
+    })
+   
+
     getUserPage()
       .then( (res) => {
         setUserData(res.data)

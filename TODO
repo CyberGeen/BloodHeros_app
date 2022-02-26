@@ -24,3 +24,6 @@ TODO: in User Data show his Qr code , and give the option to download it
 
 TODO: a page to scan QR code , button to scan Qr -> if auth : scan ? ask permision
       -> show a camera box , and data under it 
+
+
+TODO: in every scroll view : <ScrollView showsVerticalScrollIndicator={false}>
